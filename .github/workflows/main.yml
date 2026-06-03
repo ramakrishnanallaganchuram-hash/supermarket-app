@@ -28,16 +28,11 @@ jobs:
           host: "43.204.229.125"
           username: "ubuntu"
           key: ${{ secrets.EC2_KEY }}
-          request_pty: true
           script: |
             sudo chown -R ubuntu:ubuntu /home/ubuntu/supermarket
             cd /home/ubuntu/supermarket
             source /home/ubuntu/supermarket-env/bin/activate
             pip install -r requirements.txt
-            pkill -f "python3 app.py" || true
-            sleep 1
-            nohup /home/ubuntu/supermarket-env/bin/python3 /home/ubuntu/supermarket/app.py > /home/ubuntu/supermarket/app.log 2>&1 &
-            echo $! > /home/ubuntu/supermarket/app.pid
-            sleep 3
-            cat /home/ubuntu/supermarket/app.log
-            echo "Deployed!"
+            sudo systemctl restart supermarket
+            sudo systemctl status supermarket
+            echo "App deployed successfully!"
